@@ -39,3 +39,4 @@ export function useGeolocation() {
     );
   return { locate, locating, error };
 }
+}
