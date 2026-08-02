@@ -1,4 +1,4 @@
-# NeoWeather(https://neoveather.vercel.app/)
+# [NeoWeather](https://neoveather.vercel.app/)
 
 Weather, reimagined — minimally.
 
