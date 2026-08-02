@@ -95,7 +95,7 @@ export default function App() {
       )}
 
       <footer className="mt-12 pt-6 font-mono text-[10px]" style={{ color: 'var(--ink-soft)' }}>
-        Weather data from Open-Meteo
+      <span>Made with ❤️ and 🍵 by <a href="https://github.com/mizan989" target="_blank" rel="noreferrer">Md Mizan</a></span>
       </footer>
     </div>
   );
