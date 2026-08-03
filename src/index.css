@@ -1,23 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #FAFAF8;
-  --ink: #14171C;
-  --ink-soft: #5B6270;
-  --line: #E4E4E0;
-  --sky: #3E5C8A;
-  --gold: #C4923F;
-  --surface: #FFFFFF;
+  --ink: rgba(255,255,255,0.96);
+  --ink-soft: rgba(255,255,255,0.68);
+  --line: rgba(255,255,255,0.22);
+  --sky: #DCE8FF;
+  --gold: #FFD98A;
+  --surface: rgba(10,14,22,0.55);
 }
 
 .dark {
-  --paper: #0E1116;
-  --ink: #EDEEF0;
-  --ink-soft: #8A909C;
-  --line: #232832;
-  --sky: #8FB0E3;
-  --gold: #D9AC63;
-  --surface: #161B22;
+  --ink: rgba(255,255,255,0.98);
+  --ink-soft: rgba(255,255,255,0.72);
+  --line: rgba(255,255,255,0.16);
+  --sky: #EAF1FF;
+  --gold: #FFE1A3;
+  --surface: rgba(4,6,10,0.65);
 }
 
 * {
@@ -30,11 +28,12 @@ html, body, #root {
 
 body {
   margin: 0;
-  background-color: var(--paper);
+  background-color: #0A0E16;
   color: var(--ink);
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: color 0.4s ease;
   -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.25);
 }
 
 .font-display {
@@ -57,7 +56,7 @@ body {
 
 ::selection {
   background: var(--sky);
-  color: var(--paper);
+  color: #0A0E16;
 }
 
 /* Custom scrollbar for hourly strip */

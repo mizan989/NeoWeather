@@ -89,7 +89,7 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: Props) 
 
       {open && results.length > 0 && (
         <ul
-          className="absolute z-20 mt-1 w-full border text-sm shadow-sm"
+          className="absolute z-20 mt-1 w-full border text-sm shadow-lg backdrop-blur-md"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--line)' }}
         >
           {results.map((r) => (

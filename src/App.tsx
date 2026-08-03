@@ -9,15 +9,16 @@ import DetailsGrid from './components/DetailsGrid';
 import { useWeather } from './hooks/useWeather';
 import { useGeolocation } from './hooks/useGeolocation';
 import { getConditionFamily } from './lib/weatherCodes';
-import { horizonGradient } from './lib/horizon';
+import { horizonGradient, skyGradient } from './lib/horizon';
 import type { TempUnit, WeatherLocation } from './types/weather';
+import WeatherBackground from './components/WeatherBackground';
 
 const DEFAULT_LOCATION: WeatherLocation = {
-  name: 'London',
-  admin1: 'England',
-  country: 'United Kingdom',
-  latitude: 51.5074,
-  longitude: -0.1278,
+  name: 'Kolkata',
+  admin1: 'West Bengal',
+  country: 'India',
+  latitude: 22.5726,
+  longitude: 88.3639,
 };
 
 function useDarkMode() {
@@ -42,16 +43,24 @@ export default function App() {
   const { locate, locating, error: geoError } = useGeolocation();
   const { data, loading, error } = useWeather(location, unit);
 
+  const family = data ? getConditionFamily(data.current.weather_code) : 'clear';
+  const isDay = data ? data.current.is_day === 1 : true;
+
   useEffect(() => {
     if (data) {
-      const family = getConditionFamily(data.current.weather_code);
-      const gradient = horizonGradient(family, data.current.is_day === 1);
-      document.documentElement.style.setProperty('--horizon-gradient', gradient);
+      document.documentElement.style.setProperty('--horizon-gradient', horizonGradient(family, isDay));
     }
-  }, [data]);
+  }, [data, family, isDay]);
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">
+    <>
+      <div
+        className="fixed inset-0 -z-20 transition-[background] duration-1000"
+        style={{ background: skyGradient(family, isDay) }}
+      />
+      <WeatherBackground family={family} isDay={isDay} />
+
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">
       <header className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-sm font-medium tracking-tight">
           Neo<span style={{ color: 'var(--sky)' }}>Weather</span>
@@ -98,5 +107,6 @@ export default function App() {
       <span>Made with ❤️ and 🍵 by <a href="https://github.com/mizan989" target="_blank" rel="noreferrer">Md Mizan</a></span>
       </footer>
     </div>
+     </>
   );
 }

@@ -16,3 +16,19 @@ export function horizonGradient(family: ConditionFamily, isDay: boolean): string
   const [from, to] = isDay ? PALETTES[family].day : PALETTES[family].night;
   return `linear-gradient(90deg, ${from}, ${to})`;
 }
+
+// Full-screen sky backdrop, top-to-bottom. Richer and darker than the
+// horizon line so light UI text stays legible over it.
+const SKY_PALETTES: Record<ConditionFamily, { day: [string, string]; night: [string, string] }> = {
+  clear:  { day: ['#2E5A9E', '#6FA0D8'], night: ['#050813', '#101A33'] },
+  cloudy: { day: ['#5B6B82', '#8B96A8'], night: ['#0C0F16', '#1E232E'] },
+  fog:    { day: ['#7C8590', '#A9B0B9'], night: ['#111318', '#2A2E35'] },
+  rain:   { day: ['#1F2B3B', '#3C5670'], night: ['#05070C', '#131D29'] },
+  snow:   { day: ['#3E5876', '#8FAEC9'], night: ['#0A0F1A', '#1C2C42'] },
+  storm:  { day: ['#161821', '#332C44'], night: ['#030308', '#150F22'] },
+};
+
+export function skyGradient(family: ConditionFamily, isDay: boolean): string {
+  const [top, bottom] = isDay ? SKY_PALETTES[family].day : SKY_PALETTES[family].night;
+  return `linear-gradient(180deg, ${top}, ${bottom})`;
+}
