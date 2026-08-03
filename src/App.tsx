@@ -60,7 +60,7 @@ export default function App() {
       />
       <WeatherBackground family={family} isDay={isDay} />
 
-        <div className="mx-auto flex h-screen w-full max-w-md flex-col overflow-y-auto px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">      <header className="mb-8 flex items-center justify-between">
+        <div className="mx-auto flex h-dvh w-full max-w-md flex-col overflow-y-auto px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">      <header className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-sm font-medium tracking-tight">
           Neo<span style={{ color: 'var(--sky)' }}>Weather</span>
         </h1>
