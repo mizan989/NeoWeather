@@ -56,11 +56,11 @@ export default function App() {
     <>
       <div
         className="fixed inset-0 -z-20 transition-[background] duration-1000"
-        style={{ background: skyGradient(family, isDay) }}
+        style={{ background: data ? skyGradient(family, isDay) : '#0A0E16' }}
       />
-      <WeatherBackground family={family} isDay={isDay} />
+      {data && <WeatherBackground family={family} isDay={isDay} />}
 
-        <div className="mx-auto flex h-dvh w-full max-w-md flex-col overflow-y-auto px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">      <header className="mb-8 flex items-center justify-between">
+        <div className="hide-scrollbar mx-auto flex h-dvh w-full max-w-md flex-col overflow-y-auto px-6 py-8 sm:max-w-lg md:max-w-2xl md:px-10 lg:max-w-4xl xl:max-w-5xl">      <header className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-sm font-medium tracking-tight">
           Neo<span style={{ color: 'var(--sky)' }}>Weather</span>
         </h1>
