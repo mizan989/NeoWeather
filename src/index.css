@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --ink: rgba(255,255,255,0.96);
-  --ink-soft: rgba(255,255,255,0.68);
-  --line: rgba(255,255,255,0.22);
+  --ink: rgba(255, 255, 255, 0.96);
+  --ink-soft: rgba(255, 255, 255, 0.70);
+  --line: rgba(255, 255, 255, 0.15);
   --sky: #DCE8FF;
   --gold: #FFD98A;
-  --surface: rgba(10,14,22,0.55);
+  --surface: rgba(10, 14, 22, 0.65);
+  --surface-border: rgba(255, 255, 255, 0.12);
 }
 
 .dark {
-  --ink: rgba(255,255,255,0.98);
-  --ink-soft: rgba(255,255,255,0.72);
-  --line: rgba(255,255,255,0.16);
+  --ink: rgba(255, 255, 255, 0.98);
+  --ink-soft: rgba(255, 255, 255, 0.75);
+  --line: rgba(255, 255, 255, 0.12);
   --sky: #EAF1FF;
   --gold: #FFE1A3;
-  --surface: rgba(4,6,10,0.65);
+  --surface: rgba(4, 6, 10, 0.75);
+  --surface-border: rgba(255, 255, 255, 0.10);
 }
 
 * {
@@ -23,19 +25,19 @@
 }
 
 html, body, #root {
-  height: 100%;
-  height: 100dvh;   
-  overflow: hidden;
+  min-height: 100%;
+  min-height: 100dvh;
 }
 
 body {
   margin: 0;
   background-color: #0A0E16;
   color: var(--ink);
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  transition: color 0.4s ease;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  transition: color 0.4s ease, background-color 0.4s ease;
   -webkit-font-smoothing: antialiased;
-  text-shadow: 0 1px 12px rgba(0,0,0,0.25);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+  overflow-x: hidden;
 }
 
 .font-display {
@@ -46,9 +48,7 @@ body {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
-/* Signature: the horizon hairline — a single gradient thread that
-   encodes time-of-day. It is the one bold gesture in an otherwise
-   quiet interface. */
+/* Signature horizon hairline */
 .horizon-line {
   height: 2px;
   width: 100%;
@@ -61,13 +61,126 @@ body {
   color: #0A0E16;
 }
 
-/* Custom scrollbar for hourly strip */
+/* Minimalist ultra-slim translucent scrollbar (3px) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+html::-webkit-scrollbar-button,
+body::-webkit-scrollbar-button,
+*::-webkit-scrollbar-button,
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* Custom hide scrollbar utility */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Inspira UI Animations */
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes meteor {
+  0% {
+    transform: rotate(215deg) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(215deg) translateX(-600px);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+.animate-border-beam {
+  animation: border-beam calc(var(--duration) * 1s) infinite linear;
+}
+
+.animate-meteor {
+  animation: meteor 5s linear infinite;
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide var(--speed) ease-in-out infinite alternate;
+}
+
+.animate-spin-around {
+  animation: spin-around calc(var(--speed) * 2) infinite linear;
 }
 
 @media (prefers-reduced-motion: reduce) {
