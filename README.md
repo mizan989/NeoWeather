@@ -1,4 +1,4 @@
-# [NeoWeather](https://neoveather.vercel.app/)
+# Skylio
 
 Weather, reimagined — minimally.
 

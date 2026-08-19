@@ -37,14 +37,14 @@ const DEFAULT_SAVED_LOCATIONS: WeatherLocation[] = [
 
 function useDarkMode() {
   const [dark, setDark] = useState<boolean>(() => {
-    const stored = localStorage.getItem('neoweather-theme');
+    const stored = localStorage.getItem('skylio-theme') || localStorage.getItem('neoweather-theme');
     if (stored) return stored === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('neoweather-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('skylio-theme', dark ? 'dark' : 'light');
   }, [dark]);
 
   return [dark, setDark] as const;
@@ -52,7 +52,7 @@ function useDarkMode() {
 
 export default function App() {
   const [location, setLocation] = useState<WeatherLocation>(() => {
-    const saved = localStorage.getItem('neoweather-current-location');
+    const saved = localStorage.getItem('skylio-current-location') || localStorage.getItem('neoweather-current-location');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -64,7 +64,7 @@ export default function App() {
   });
 
   const [savedLocations, setSavedLocations] = useState<WeatherLocation[]>(() => {
-    const stored = localStorage.getItem('neoweather-bookmarks');
+    const stored = localStorage.getItem('skylio-bookmarks') || localStorage.getItem('neoweather-bookmarks');
     if (stored) {
       try {
         return JSON.parse(stored);
@@ -83,11 +83,11 @@ export default function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('neoweather-current-location', JSON.stringify(location));
+    localStorage.setItem('skylio-current-location', JSON.stringify(location));
   }, [location]);
 
   useEffect(() => {
-    localStorage.setItem('neoweather-bookmarks', JSON.stringify(savedLocations));
+    localStorage.setItem('skylio-bookmarks', JSON.stringify(savedLocations));
   }, [savedLocations]);
 
   const handleRefresh = useCallback(() => {
@@ -163,7 +163,7 @@ export default function App() {
         <header className="mb-6 flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
           <div className="flex items-baseline gap-2">
             <h1 className="font-display text-sm font-medium tracking-tight text-white/90">
-              Neo<span className="text-[var(--sky)]">Weather</span>
+              Sky<span className="text-[var(--sky)]">lio</span>
             </h1>
           </div>
 
