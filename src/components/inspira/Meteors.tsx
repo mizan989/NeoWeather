@@ -20,7 +20,7 @@ export function Meteors({ number = 16, className }: MeteorsProps) {
   }, [number]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 -z-15 overflow-hidden will-change-transform">
       {meteorStyles.map((style, idx) => (
         <span
           key={idx}

@@ -282,5 +282,12 @@ export default function WeatherBackground({ family, isDay }: Props) {
     };
   }, [family, isDay]);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-10" aria-hidden="true" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 -z-10 will-change-transform"
+      style={{ transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
+      aria-hidden="true"
+    />
+  );
 }

@@ -122,7 +122,10 @@ export default function App() {
 
   useEffect(() => {
     if (data) {
+      const gradient = skyGradient(family, isDay);
       document.documentElement.style.setProperty('--horizon-gradient', horizonGradient(family, isDay));
+      document.documentElement.style.setProperty('--sky-bg', gradient);
+      document.body.style.backgroundImage = gradient;
     }
   }, [data, family, isDay]);
 
@@ -134,11 +137,15 @@ export default function App() {
   ];
 
   return (
-    <ReactLenis root options={{ lerp: 0.08, duration: 1.2, smoothWheel: true }}>
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.0, smoothWheel: true }}>
       {/* Dynamic atmospheric sky background */}
       <div
-        className="fixed inset-0 -z-20 transition-[background] duration-1000"
-        style={{ background: data ? skyGradient(family, isDay) : '#0A0E16' }}
+        className="pointer-events-none fixed inset-0 -z-20 will-change-transform transition-[background] duration-1000"
+        style={{
+          background: data ? skyGradient(family, isDay) : '#0A0E16',
+          transform: 'translate3d(0,0,0)',
+          backfaceVisibility: 'hidden',
+        }}
       />
 
       {/* Particle Canvas Engine */}
