@@ -161,8 +161,8 @@ export default function App() {
       <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 py-6 sm:px-6 md:px-8">
         {/* Minimalist Header */}
         <header className="mb-6 flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
-          <div className="flex items-baseline gap-2">
-            <h1 className="font-display text-sm font-medium tracking-tight text-white/90">
+          <div className="flex items-center gap-2">
+            <h1 className="font-display text-2xl font-bold tracking-tight text-white/95 sm:text-3xl">
               Sky<span className="text-[var(--sky)]">lio</span>
             </h1>
           </div>
