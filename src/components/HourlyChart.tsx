@@ -98,26 +98,40 @@ export default function HourlyChart({ hourly, unit }: HourlyChartProps) {
           24-Hour Forecast
         </h3>
 
-        <div className="flex items-center rounded-full border border-white/[0.08] bg-white/[0.02] p-0.5">
+        <div className="relative flex items-center rounded-full border border-white/[0.08] bg-white/[0.02] p-0.5 backdrop-blur-md">
           <button
             onClick={() => setActiveTab('cards')}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-mono transition-all duration-200 ${
+            className={`relative z-10 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-mono transition-colors duration-200 ${
               activeTab === 'cards'
-                ? 'bg-white/15 text-white'
+                ? 'text-white font-medium'
                 : 'text-white/40 hover:text-white/70'
             }`}
           >
+            {activeTab === 'cards' && (
+              <motion.div
+                layoutId="hourly-view-tab"
+                className="absolute inset-0 z-[-1] rounded-full border border-white/20 bg-white/15 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+              />
+            )}
             <LayoutList size={12} />
             <span>Strip</span>
           </button>
           <button
             onClick={() => setActiveTab('chart')}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-mono transition-all duration-200 ${
+            className={`relative z-10 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-mono transition-colors duration-200 ${
               activeTab === 'chart'
-                ? 'bg-white/15 text-white'
+                ? 'text-white font-medium'
                 : 'text-white/40 hover:text-white/70'
             }`}
           >
+            {activeTab === 'chart' && (
+              <motion.div
+                layoutId="hourly-view-tab"
+                className="absolute inset-0 z-[-1] rounded-full border border-white/20 bg-white/15 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+              />
+            )}
             <ChartIcon size={12} />
             <span>Curve</span>
           </button>
@@ -133,9 +147,9 @@ export default function HourlyChart({ hourly, unit }: HourlyChartProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.25 }}
-            className="hide-scrollbar mt-4 flex gap-2.5 overflow-x-auto pb-1"
+            className="hide-scrollbar mt-4 flex gap-2.5 overflow-x-auto pb-1.5 pt-1"
           >
-            {sliceIndices.map((i) => {
+            {sliceIndices.map((i, cardIdx) => {
               const time = new Date(hourly.time[i]);
               const hourLabel = time.toLocaleTimeString([], { hour: 'numeric' });
               const isDayHour = time.getHours() >= 6 && time.getHours() < 20;
@@ -144,15 +158,20 @@ export default function HourlyChart({ hourly, unit }: HourlyChartProps) {
               const precip = hourly.precipitation_probability[i];
 
               return (
-                <div
+                <motion.div
                   key={hourly.time[i]}
-                  className={`flex w-16 shrink-0 flex-col items-center gap-2 rounded-2xl py-3 text-center transition-all duration-200 ${
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: cardIdx * 0.015 }}
+                  whileHover={{ y: -5, scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className={`flex w-16 shrink-0 flex-col items-center gap-2 rounded-2xl py-3 text-center transition-all duration-200 cursor-pointer ${
                     isNow
-                      ? 'border border-white/20 bg-white/[0.08] text-white shadow-xs'
-                      : 'hover:bg-white/[0.04] text-white/70'
+                      ? 'border border-white/30 bg-white/[0.1] text-white shadow-[0_4px_16px_rgba(220,232,255,0.15)] font-medium'
+                      : 'border border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.06] text-white/70 hover:text-white'
                   }`}
                 >
-                  <span className="font-mono text-xs text-white/40">
+                  <span className={`font-mono text-xs ${isNow ? 'text-[var(--sky)]' : 'text-white/40'}`}>
                     {isNow ? 'Now' : hourLabel}
                   </span>
                   <Icon size={18} strokeWidth={1.5} className="text-[var(--sky)] my-0.5" />
@@ -168,7 +187,7 @@ export default function HourlyChart({ hourly, unit }: HourlyChartProps) {
                   ) : (
                     <span className="font-mono text-[10px] text-white/20">•</span>
                   )}
-                </div>
+                </motion.div>
               );
             })}
           </motion.div>

@@ -77,7 +77,7 @@ export default function HeroWeatherCard({
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-baseline gap-2">
-              <h2 className="font-display text-2xl font-medium tracking-tight text-white/95 md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
                 {location.name}
               </h2>
               {location.country && (
@@ -86,15 +86,21 @@ export default function HeroWeatherCard({
                 </span>
               )}
             </div>
-            <p className="mt-1 font-mono text-xs text-white/45">
-              Local time {localTime || '—'}
-            </p>
+            <div className="mt-1.5 flex items-center gap-2 font-mono text-xs text-white/45">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--sky)] opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-[var(--sky)]" />
+              </span>
+              <span>Local time {localTime || '—'}</span>
+            </div>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
             onClick={onToggleBookmark}
             aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark location'}
-            className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 font-mono text-xs text-white/60 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08] hover:text-white active:scale-95"
+            className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 font-mono text-xs text-white/60 transition-all duration-200 hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
           >
             {isBookmarked ? (
               <>
@@ -107,7 +113,7 @@ export default function HeroWeatherCard({
                 <span className="hidden sm:inline">Save</span>
               </>
             )}
-          </button>
+          </motion.button>
         </div>
 
         {/* Hero temperature display */}
@@ -139,11 +145,11 @@ export default function HeroWeatherCard({
           {/* Condition Icon & Label */}
           <div className="flex flex-col items-end gap-1.5 pb-1">
             <motion.div
-              animate={{ y: [0, -3, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="flex items-center justify-center"
+              animate={{ y: [0, -4, 0], rotate: [0, 1, 0, -1, 0] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex items-center justify-center filter drop-shadow-[0_4px_12px_rgba(220,232,255,0.2)]"
             >
-              <WeatherIcon size={44} strokeWidth={1.25} className="text-[var(--sky)]" />
+              <WeatherIcon size={46} strokeWidth={1.3} className="text-[var(--sky)]" />
             </motion.div>
             <span className="text-sm font-medium tracking-tight text-white/90">{label}</span>
           </div>

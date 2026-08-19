@@ -65,28 +65,36 @@ export default function DailyList({ daily }: DailyListProps) {
           const isExpanded = expandedIndex === i;
 
           return (
-            <div key={date} className="transition-colors">
-              <button
+            <motion.div
+              key={date}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: i * 0.02 }}
+              className="transition-colors"
+            >
+              <motion.button
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.995 }}
                 onClick={() => toggleExpand(i)}
-                className={`flex w-full items-center gap-3 py-3 text-left text-sm transition-colors duration-200 rounded-xl px-1.5 ${
-                  isExpanded ? 'bg-white/[0.03]' : 'hover:bg-white/[0.02]'
+                className={`flex w-full items-center gap-3 py-3 text-left text-sm transition-all duration-200 rounded-xl px-2 ${
+                  isExpanded ? 'bg-white/[0.05] shadow-[0_2px_12px_rgba(0,0,0,0.15)]' : 'hover:bg-white/[0.025]'
                 }`}
               >
                 {/* Day label */}
-                <span className={`w-14 shrink-0 font-mono text-xs ${isToday ? 'text-[var(--sky)] font-medium' : 'text-white/80'}`}>
+                <span className={`w-14 shrink-0 font-mono text-xs ${isToday ? 'text-[var(--sky)] font-semibold' : 'text-white/80'}`}>
                   {day}
                 </span>
 
                 {/* Weather icon & label */}
                 <div className="flex w-28 sm:w-36 shrink-0 items-center gap-2">
                   <Icon size={16} strokeWidth={1.5} className="shrink-0 text-[var(--sky)]" />
-                  <span className="truncate text-xs text-white/65">{label}</span>
+                  <span className="truncate text-xs text-white/70 font-normal">{label}</span>
                 </div>
 
                 {/* Rain probability */}
                 <div className="w-10 shrink-0">
                   {precipProb > 10 ? (
-                    <span className="font-mono text-[11px] text-[var(--gold)]">
+                    <span className="font-mono text-[11px] text-[var(--gold)] font-medium">
                       {precipProb}%
                     </span>
                   ) : (
@@ -100,30 +108,32 @@ export default function DailyList({ daily }: DailyListProps) {
                 </span>
 
                 {/* Scaled bar */}
-                <div className="relative mx-1 h-1.5 flex-1 rounded-full bg-white/[0.08]">
-                  <div
-                    className="absolute h-full rounded-full transition-all duration-700"
+                <div className="relative mx-1 h-1.5 flex-1 rounded-full bg-white/[0.08] overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${barWidth}%` }}
+                    transition={{ duration: 0.8, delay: i * 0.05, ease: 'easeOut' }}
+                    className="absolute h-full rounded-full"
                     style={{
                       left: `${barStart}%`,
-                      width: `${barWidth}%`,
                       background: 'linear-gradient(90deg, var(--sky), var(--gold))',
                     }}
                   />
                 </div>
 
                 {/* High temp */}
-                <span className="w-7 shrink-0 font-mono text-xs text-white/90 tabular-nums">
+                <span className="w-7 shrink-0 font-mono text-xs text-white/90 tabular-nums font-medium">
                   {Math.round(hi)}°
                 </span>
 
                 <motion.div
                   animate={{ rotate: isExpanded ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   className="shrink-0 text-white/30"
                 >
                   <ChevronDown size={13} />
                 </motion.div>
-              </button>
+              </motion.button>
 
               {/* Smooth Animated Accordion Drawer */}
               <AnimatePresence>
@@ -132,11 +142,11 @@ export default function DailyList({ daily }: DailyListProps) {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                     className="overflow-hidden"
                   >
-                    <div className="my-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5 text-xs font-mono">
-                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-white/70">
+                    <div className="my-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-xs font-mono backdrop-blur-md">
+                      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4 text-white/70">
                         <div className="flex items-center gap-1.5">
                           <Wind size={13} className="text-[var(--sky)]" />
                           <span>Wind {maxWind ?? '—'} km/h {maxGusts ? `(${maxGusts}g)` : ''}</span>
@@ -169,7 +179,7 @@ export default function DailyList({ daily }: DailyListProps) {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
       </div>

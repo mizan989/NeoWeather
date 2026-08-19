@@ -1,16 +1,18 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ReactLenis } from 'lenis/react';
 import {
   Loader2, RefreshCw, LayoutDashboard, Clock, CalendarDays, Activity
 } from 'lucide-react';
 import SearchBar from './components/SearchBar';
 import SavedLocations from './components/SavedLocations';
-import { UnitToggle, ThemeToggle } from './components/Toggles';
+import { UnitToggle } from './components/Toggles';
 import HeroWeatherCard from './components/HeroWeatherCard';
 import HourlyChart from './components/HourlyChart';
 import DailyList from './components/DailyList';
 import TelemetryBentoGrid from './components/TelemetryBentoGrid';
 import WeatherBackground from './components/WeatherBackground';
+import Footer from './components/Footer';
 import { Meteors } from './components/inspira/Meteors';
 import { AnimatedTabs, type TabItem } from './components/inspira/AnimatedTabs';
 import { useWeather } from './hooks/useWeather';
@@ -34,21 +36,6 @@ const DEFAULT_SAVED_LOCATIONS: WeatherLocation[] = [
   { name: 'New York', admin1: 'New York', country: 'United States', latitude: 40.7128, longitude: -74.0060 },
   { name: 'Paris', country: 'France', latitude: 48.8566, longitude: 2.3522 },
 ];
-
-function useDarkMode() {
-  const [dark, setDark] = useState<boolean>(() => {
-    const stored = localStorage.getItem('skylio-theme') || localStorage.getItem('neoweather-theme');
-    if (stored) return stored === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('skylio-theme', dark ? 'dark' : 'light');
-  }, [dark]);
-
-  return [dark, setDark] as const;
-}
 
 export default function App() {
   const [location, setLocation] = useState<WeatherLocation>(() => {
@@ -77,10 +64,13 @@ export default function App() {
 
   const [unit, setUnit] = useState<TempUnit>('celsius');
   const [activeTab, setActiveTab] = useState<WeatherViewTab>('overview');
-  const [dark, setDark] = useDarkMode();
   const { locate, locating, error: geoError } = useGeolocation();
   const { data, loading, error, reload } = useWeather(location, unit);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('skylio-current-location', JSON.stringify(location));
@@ -144,7 +134,7 @@ export default function App() {
   ];
 
   return (
-    <>
+    <ReactLenis root options={{ lerp: 0.08, duration: 1.2, smoothWheel: true }}>
       {/* Dynamic atmospheric sky background */}
       <div
         className="fixed inset-0 -z-20 transition-[background] duration-1000"
@@ -158,29 +148,40 @@ export default function App() {
       {(!isDay || family === 'clear') && <Meteors number={8} />}
 
       {/* Main App Container */}
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 py-6 sm:px-6 md:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 py-6 sm:px-6 md:px-8"
+      >
         {/* Minimalist Header */}
         <header className="mb-6 flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
-          <div className="flex items-center gap-2">
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <h1 className="font-display text-2xl font-bold tracking-tight text-white/95 sm:text-3xl">
               Sky<span className="text-[var(--sky)]">lio</span>
             </h1>
-          </div>
+          </motion.div>
 
           <div className="flex items-center gap-2">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={handleRefresh}
               disabled={isRefreshing || loading}
               title="Refresh weather"
-              className="flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] p-1.5 text-white/40 backdrop-blur-md transition-all hover:border-white/20 hover:text-white active:scale-95 disabled:opacity-40"
+              className="flex size-7.5 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] text-white/40 backdrop-blur-md transition-colors hover:border-white/20 hover:text-white disabled:opacity-40"
             >
               <RefreshCw
                 size={13}
                 className={isRefreshing || loading ? 'animate-spin text-[var(--sky)]' : ''}
               />
-            </button>
+            </motion.button>
             <UnitToggle unit={unit} onChange={setUnit} />
-            <ThemeToggle dark={dark} onChange={setDark} />
           </div>
         </header>
 
@@ -192,7 +193,13 @@ export default function App() {
             locating={locating}
           />
           {geoError && (
-            <p className="font-mono text-xs text-[var(--gold)]">{geoError}</p>
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-mono text-xs text-[var(--gold)]"
+            >
+              {geoError}
+            </motion.p>
           )}
 
           <SavedLocations
@@ -217,23 +224,32 @@ export default function App() {
 
         {/* Loading State */}
         {loading && !data && (
-          <div className="flex flex-1 flex-col items-center justify-center py-28">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-1 flex-col items-center justify-center py-28"
+          >
             <Loader2 className="animate-spin text-[var(--sky)]" size={24} />
             <p className="mt-3 font-mono text-xs text-white/40">Syncing with atmospheric sensors...</p>
-          </div>
+          </motion.div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="my-12 rounded-3xl border border-rose-500/20 bg-rose-950/20 p-6 text-center text-xs font-mono text-rose-200 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="my-12 rounded-3xl border border-rose-500/20 bg-rose-950/20 p-6 text-center text-xs font-mono text-rose-200 backdrop-blur-md"
+          >
             <p>Could not retrieve forecast for {location.name}.</p>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={handleRefresh}
               className="mt-3 rounded-full border border-rose-500/30 bg-white/5 px-3 py-1 text-white hover:bg-white/10"
             >
               Retry
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
 
         {/* Weather Presentation with smooth AnimatePresence */}
@@ -250,15 +266,15 @@ export default function App() {
               timezone={data.timezone}
             />
 
-            {/* Tab Views */}
+            {/* Tab Views with spring physics */}
             <AnimatePresence mode="wait">
               {activeTab === 'overview' && (
                 <motion.div
                   key="overview"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                   className="flex flex-col gap-5"
                 >
                   <HourlyChart
@@ -279,10 +295,10 @@ export default function App() {
               {activeTab === 'hourly' && (
                 <motion.div
                   key="hourly"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                   className="flex flex-col gap-5"
                 >
                   <HourlyChart
@@ -296,10 +312,10 @@ export default function App() {
               {activeTab === 'daily' && (
                 <motion.div
                   key="daily"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                   className="flex flex-col gap-5"
                 >
                   <DailyList
@@ -311,10 +327,10 @@ export default function App() {
               {activeTab === 'telemetry' && (
                 <motion.div
                   key="telemetry"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                   className="flex flex-col gap-5"
                 >
                   <TelemetryBentoGrid
@@ -327,24 +343,9 @@ export default function App() {
           </div>
         )}
 
-        {/* Minimalist Footer */}
-        <footer className="mt-16 flex items-center justify-between border-t border-white/[0.06] pt-6 font-mono text-[10px] text-white/30">
-          <div>
-            <span>Made by </span>
-            <a
-              href="https://github.com/mizan989"
-              target="_blank"
-              rel="noreferrer"
-              className="text-white/60 hover:text-white transition-colors no-underline"
-            >
-              Md Mizan
-            </a>
-          </div>
-          <div>
-            <span>Open-Meteo</span>
-          </div>
-        </footer>
-      </div>
-    </>
+        {/* Footer with social links */}
+        <Footer />
+      </motion.div>
+    </ReactLenis>
   );
 }

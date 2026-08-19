@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 :root {
   --ink: rgba(255, 255, 255, 0.96);
@@ -8,6 +9,8 @@
   --gold: #FFD98A;
   --surface: rgba(10, 14, 22, 0.65);
   --surface-border: rgba(255, 255, 255, 0.12);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .dark {
@@ -181,6 +184,53 @@ body,
 
 .animate-spin-around {
   animation: spin-around calc(var(--speed) * 2) infinite linear;
+}
+
+/* Watermelon UI Micro-interactions */
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, rgba(255,255,255,0.7) 0%, rgba(220,232,255,1) 50%, rgba(255,255,255,0.7) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-sweep 6s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

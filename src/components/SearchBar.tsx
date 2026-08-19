@@ -100,8 +100,11 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: SearchB
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <div className="group flex items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 backdrop-blur-2xl transition-all duration-300 focus-within:border-white/25 focus-within:bg-white/[0.05]">
-        <Search size={15} className="text-white/40 transition-colors group-focus-within:text-white/80" />
+      <motion.div
+        whileFocus={{ scale: 1.002 }}
+        className="group flex items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 backdrop-blur-2xl transition-all duration-300 focus-within:border-white/30 focus-within:bg-white/[0.06] focus-within:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+      >
+        <Search size={15} className="text-white/40 transition-colors group-focus-within:text-[var(--sky)]" />
 
         <input
           ref={inputRef}
@@ -114,16 +117,20 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: SearchB
         />
 
         {query && (
-          <button
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            whileTap={{ scale: 0.85 }}
             onClick={() => {
               setQuery('');
               setResults([]);
               inputRef.current?.focus();
             }}
-            className="text-white/30 hover:text-white/70 transition-colors"
+            className="text-white/30 hover:text-white/80 transition-colors"
           >
             <X size={13} />
-          </button>
+          </motion.button>
         )}
 
         {searching && (
@@ -137,11 +144,13 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: SearchB
           </div>
         )}
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.94 }}
           onClick={onUseLocation}
           disabled={locating}
           title="Use current location"
-          className="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-2.5 py-1 font-mono text-xs text-white/70 transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-95 disabled:opacity-40 shrink-0"
+          className="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-2.5 py-1 font-mono text-xs text-white/70 transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:opacity-40 shrink-0"
         >
           {locating ? (
             <Loader2 size={12} className="animate-spin text-[var(--sky)]" />
@@ -149,29 +158,34 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: SearchB
             <MapPin size={12} className="text-[var(--sky)]" />
           )}
           <span className="hidden md:inline">GPS</span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* Animated Suggestion Dropdown */}
       <AnimatePresence>
         {open && results.length > 0 && (
           <motion.ul
-            initial={{ opacity: 0, y: 4, scale: 0.98 }}
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 z-50 mt-1.5 max-h-72 overflow-y-auto rounded-2xl border border-white/[0.12] bg-[#0A0E16]/95 p-1.5 shadow-2xl backdrop-blur-2xl"
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+            className="absolute left-0 right-0 z-50 mt-1.5 max-h-72 overflow-y-auto rounded-2xl border border-white/[0.14] bg-[#0A0E16]/95 p-1.5 shadow-2xl backdrop-blur-2xl"
           >
             {results.map((r, idx) => {
               const isHighlighted = idx === selectedIndex;
               return (
-                <li key={`${r.id}-${idx}`}>
+                <motion.li
+                  key={`${r.id}-${idx}`}
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.15, delay: idx * 0.02 }}
+                >
                   <button
                     onClick={() => handleSelect(r)}
                     onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs transition-colors duration-150 ${
+                    className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs transition-all duration-150 ${
                       isHighlighted
-                        ? 'bg-white/10 text-white'
+                        ? 'bg-white/12 text-white translate-x-1'
                         : 'text-white/70 hover:bg-white/[0.06] hover:text-white'
                     }`}
                   >
@@ -190,7 +204,7 @@ export default function SearchBar({ onSelect, onUseLocation, locating }: SearchB
                       {r.country}
                     </span>
                   </button>
-                </li>
+                </motion.li>
               );
             })}
           </motion.ul>

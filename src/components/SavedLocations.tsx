@@ -35,14 +35,16 @@ export default function SavedLocations({
               <motion.div
                 key={`${loc.name}-${loc.latitude}`}
                 layout
-                initial={{ opacity: 0, scale: 0.85 }}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                transition={{ duration: 0.2 }}
-                className={`group flex shrink-0 items-center rounded-full border text-xs transition-colors duration-200 ${
+                exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.15 } }}
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+                className={`group flex shrink-0 items-center rounded-full border text-xs transition-all duration-200 ${
                   isSelected
-                    ? 'border-white/25 bg-white/15 text-white'
-                    : 'border-white/[0.06] bg-white/[0.02] text-white/60 hover:border-white/15 hover:bg-white/[0.06] hover:text-white'
+                    ? 'border-white/30 bg-white/15 text-white shadow-[0_2px_10px_rgba(220,232,255,0.15)] font-medium'
+                    : 'border-white/[0.07] bg-white/[0.025] text-white/60 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
                 }`}
               >
                 <button
@@ -51,7 +53,9 @@ export default function SavedLocations({
                 >
                   {loc.name}
                 </button>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.8 }}
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemove(loc.name);
@@ -60,7 +64,7 @@ export default function SavedLocations({
                   className="pr-1.5 text-white/20 hover:text-rose-400 transition-colors"
                 >
                   <X size={10} />
-                </button>
+                </motion.button>
               </motion.div>
             );
           })}

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { 
   Wind, Sunrise, Sunset, Sun, Droplets, Eye, Gauge, Compass
 } from 'lucide-react';
@@ -69,7 +70,7 @@ export default function TelemetryBentoGrid({ current, daily }: TelemetryBentoGri
               <Wind size={14} className="text-[var(--sky)]" />
               <span>Wind</span>
             </div>
-            <span className="font-mono text-xs">{windDir.cardinal}</span>
+            <span className="font-mono text-xs font-medium text-white/70">{windDir.cardinal}</span>
           </div>
 
           <div className="my-3 flex items-center justify-between">
@@ -86,13 +87,13 @@ export default function TelemetryBentoGrid({ current, daily }: TelemetryBentoGri
             </div>
 
             {/* Minimalist Compass */}
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
-              <div
-                className="transition-transform duration-1000 ease-out"
-                style={{ transform: `rotate(${current.wind_direction_10m}deg)` }}
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] shadow-[inset_0_0_12px_rgba(220,232,255,0.05)]">
+              <motion.div
+                animate={{ rotate: current.wind_direction_10m }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               >
-                <Compass size={24} strokeWidth={1.25} className="text-[var(--sky)]" />
-              </div>
+                <Compass size={24} strokeWidth={1.3} className="text-[var(--sky)]" />
+              </motion.div>
             </div>
           </div>
 
@@ -108,7 +109,7 @@ export default function TelemetryBentoGrid({ current, daily }: TelemetryBentoGri
               <Sun size={14} className="text-[var(--gold)]" />
               <span>Sun & Daylight</span>
             </div>
-            <span className="font-mono text-xs">{isSunUp ? 'Day' : 'Night'}</span>
+            <span className="font-mono text-xs font-medium text-[var(--gold)]">{isSunUp ? 'Day' : 'Night'}</span>
           </div>
 
           {/* Minimalist SVG Solar Arc */}
@@ -123,12 +124,20 @@ export default function TelemetryBentoGrid({ current, daily }: TelemetryBentoGri
                   strokeDasharray="2 2"
                 />
                 {isSunUp && (
-                  <circle
-                    cx={15 + 130 * sunProgress}
-                    cy={55 - 50 * Math.sin(sunProgress * Math.PI)}
-                    r="4"
+                  <motion.circle
+                    initial={{ r: 0 }}
+                    animate={{
+                      cx: 15 + 130 * sunProgress,
+                      cy: 55 - 50 * Math.sin(sunProgress * Math.PI),
+                      r: [4, 5, 4],
+                    }}
+                    transition={{
+                      r: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+                      cx: { duration: 1, ease: 'easeOut' },
+                      cy: { duration: 1, ease: 'easeOut' },
+                    }}
                     fill="var(--gold)"
-                    className="filter drop-shadow-[0_0_6px_rgba(255,217,138,0.8)]"
+                    className="filter drop-shadow-[0_0_8px_rgba(255,217,138,0.9)]"
                   />
                 )}
               </svg>

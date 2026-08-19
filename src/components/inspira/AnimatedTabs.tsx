@@ -31,26 +31,35 @@ export function AnimatedTabs<T extends string = string>({
         const isActive = activeTab === tab.id;
         const Icon = tab.icon;
         return (
-          <button
+          <motion.button
             key={tab.id}
+            whileTap={{ scale: 0.94 }}
             onClick={() => onChange(tab.id)}
             className={cn(
-              'relative z-10 flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-normal transition-colors duration-200',
+              'relative z-10 flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-mono text-xs font-normal transition-colors duration-200',
               isActive
-                ? 'text-white'
-                : 'text-white/40 hover:text-white/75'
+                ? 'text-white font-medium'
+                : 'text-white/40 hover:text-white/80'
             )}
           >
             {isActive && (
               <motion.div
                 layoutId="active-tab-pill-minimal"
-                className="absolute inset-0 z-[-1] rounded-full border border-white/15 bg-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)] backdrop-blur-md"
-                transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                className="absolute inset-0 z-[-1] rounded-full border border-white/20 bg-white/12 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.2)] backdrop-blur-md"
+                transition={{ type: 'spring', stiffness: 420, damping: 30 }}
               />
             )}
-            {Icon && <Icon size={12} className={isActive ? 'text-[var(--sky)]' : 'text-current'} />}
+            {Icon && (
+              <Icon
+                size={13}
+                className={cn(
+                  'transition-transform duration-200',
+                  isActive ? 'text-[var(--sky)] scale-110' : 'text-current'
+                )}
+              />
+            )}
             <span>{tab.label}</span>
-          </button>
+          </motion.button>
         );
       })}
     </div>
