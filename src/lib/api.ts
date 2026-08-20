@@ -1,8 +1,7 @@
-import type { ForecastResponse, GeocodeResult, TempUnit } from '../types/weather';
+import type { ForecastResponse, GeocodeResult, TempUnit, WeatherLocation } from '../types/weather';
 
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const GEOCODE_URL = 'https://geocoding-api.open-meteo.com/v1/search';
-const REVERSE_URL = 'https://geocoding-api.open-meteo.com/v1/reverse';
 
 export async function searchCities(query: string): Promise<GeocodeResult[]> {
   if (!query.trim()) return [];
@@ -14,11 +13,76 @@ export async function searchCities(query: string): Promise<GeocodeResult[]> {
 }
 
 export async function reverseGeocode(lat: number, lon: number): Promise<GeocodeResult | null> {
-  const url = `${REVERSE_URL}?latitude=${lat}&longitude=${lon}&language=en&format=json`;
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.results?.[0] ?? null;
+  // Primary: BigDataCloud free client reverse geocoding (fast, accurate, no auth needed)
+  try {
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      const name = data.city || data.locality || data.principalSubdivision || data.countryName || 'Your Location';
+      const admin1 = data.principalSubdivision || undefined;
+      const country = data.countryName || '';
+      return {
+        id: Math.round(lat * 10000 + lon),
+        name,
+        admin1,
+        country,
+        latitude: lat,
+        longitude: lon,
+        timezone: 'auto',
+      };
+    }
+  } catch {
+    // Fallback to OSM Nominatim
+  }
+
+  // Fallback 1: OpenStreetMap Nominatim
+  try {
+    const osmUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`;
+    const res = await fetch(osmUrl, {
+      headers: { 'Accept-Language': 'en' },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const addr = data.address || {};
+      const name = addr.city || addr.town || addr.village || addr.suburb || addr.municipality || addr.county || 'Your Location';
+      return {
+        id: Math.round(lat * 10000 + lon),
+        name,
+        admin1: addr.state || addr.region,
+        country: addr.country || '',
+        latitude: lat,
+        longitude: lon,
+        timezone: 'auto',
+      };
+    }
+  } catch {
+    // ignore
+  }
+
+  return null;
+}
+
+export async function ipGeolocate(): Promise<WeatherLocation | null> {
+  try {
+    const res = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client');
+    if (res.ok) {
+      const data = await res.json();
+      if (typeof data.latitude === 'number' && typeof data.longitude === 'number') {
+        const name = data.city || data.locality || data.principalSubdivision || data.countryName || 'Local Region';
+        return {
+          name,
+          admin1: data.principalSubdivision,
+          country: data.countryName || '',
+          latitude: data.latitude,
+          longitude: data.longitude,
+        };
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null;
 }
 
 export async function fetchForecast(

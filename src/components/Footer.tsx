@@ -1,4 +1,19 @@
+import React from 'react';
 import { motion } from 'framer-motion';
+import {
+  ShieldCheck,
+  FileText,
+  ArrowUp,
+  ExternalLink,
+  Compass,
+  Clock,
+  CalendarDays,
+  Activity,
+  Layers,
+  Sparkles,
+  Heart
+} from 'lucide-react';
+import type { WeatherViewTab } from '../types/weather';
 
 interface SocialLink {
   name: string;
@@ -68,67 +83,261 @@ const SOCIAL_LINKS: SocialLink[] = [
   },
 ];
 
-export default function Footer() {
+interface FooterProps {
+  onOpenLegal?: (tab: 'privacy' | 'terms') => void;
+  onNavigateTab?: (tab: WeatherViewTab) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenLegal, onNavigateTab }) => {
+  const currentYear = new Date().getFullYear();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleTabClick = (tab: WeatherViewTab) => {
+    onNavigateTab?.(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="mt-20 mb-8 flex flex-col gap-6">
       {/* Horizon Hairline Separator */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.15] to-transparent" />
 
-      {/* Floating Glassmorphic Footer Island */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.025] px-6 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/[0.15] sm:px-8 sm:py-7">
-        {/* Soft Ambient Light Glow */}
-        <div className="pointer-events-none absolute -top-16 left-1/2 -z-10 h-32 w-80 -translate-x-1/2 rounded-full bg-[var(--sky)]/8 blur-3xl" />
+      {/* Futuristic Glassmorphic Footer Island */}
+      <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.025] p-6 shadow-[0_16px_50px_rgba(0,0,0,0.4)] backdrop-blur-2xl transition-all duration-300 hover:border-white/[0.14] sm:p-8 md:p-10">
+        {/* Soft Ambient Light Cones */}
+        <div className="pointer-events-none absolute -top-24 left-1/4 -z-10 h-48 w-80 rounded-full bg-[var(--sky)]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 right-1/4 -z-10 h-48 w-80 rounded-full bg-amber-500/5 blur-3xl" />
 
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-          {/* Brand & Author Information */}
-          <div className="flex flex-col items-center gap-1 sm:items-start">
-            <div className="flex items-center gap-2">
-              <span className="font-display text-lg font-bold tracking-tight text-white/95">
-                Sky<span className="text-[var(--sky)]">lio</span>
-              </span>
-              <span className="rounded-full border border-white/[0.1] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-white/50">
-                weather • redefined
-              </span>
+        {/* Main Grid: Multi-Column Layout */}
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          
+          {/* Column 1: Brand, Tagline & Live Status (lg: 5 cols) */}
+          <div className="flex flex-col gap-4 lg:col-span-5">
+            <div className="flex items-center gap-3">
+              <motion.div
+                whileHover={{ rotate: 15, scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                className="flex size-9 items-center justify-center rounded-2xl border border-sky-400/30 bg-gradient-to-br from-sky-400/20 to-blue-600/20 text-[var(--sky)] shadow-[0_0_15px_rgba(220,232,255,0.15)]"
+              >
+                <Sparkles className="size-5" />
+              </motion.div>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-2xl font-bold tracking-tight text-white">
+                  Sky<span className="text-[var(--sky)]">lio</span>
+                </span>
+              </div>
             </div>
-            <div className="mt-0.5 flex items-center gap-1 text-xs text-white/50 font-normal">
-              <span>Made by</span>
-              <span className="font-medium text-white/80">Md Mizan</span>
+
+            <p className="text-sm leading-relaxed text-white/65 max-w-sm">
+              Hyperlocal atmospheric intelligence, precision forecasts, and real-time celestial telemetry crafted with fluid motion and minimalist design.
+            </p>
+
+            {/* Live Atmospheric Telemetry Beacon */}
+            <div className="mt-1 flex flex-wrap items-center gap-2.5">
+              <div className="flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-950/20 px-3 py-1.5 text-xs text-emerald-300 backdrop-blur-md">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
+                </span>
+                <span className="font-mono text-[11px] font-medium">Sensors: Live • Open-Meteo v1</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-mono text-white/50">
+                <Layers className="size-3 text-white/40" />
+                <span>ECMWF & GFS Models</span>
+              </div>
             </div>
           </div>
 
-          {/* Social Media Handles Pill Dock */}
-          <div className="flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-black/25 p-1.5 shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-            {SOCIAL_LINKS.map((link) => {
-              const Icon = link.icon;
-              return (
-                <motion.a
-                  key={link.name}
-                  href={link.url}
+          {/* Column 2: Atmospheric Views (lg: 2 cols) */}
+          <div className="flex flex-col gap-3 lg:col-span-2">
+            <h4 className="font-display text-xs font-semibold uppercase tracking-wider text-white/40">
+              Atmosphere
+            </h4>
+            <ul className="flex flex-col gap-2 text-sm text-white/70">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleTabClick('overview')}
+                  className="flex items-center gap-2 transition-colors hover:text-white group text-left"
+                >
+                  <Compass className="size-3.5 text-white/40 group-hover:text-[var(--sky)] transition-colors" />
+                  <span>Overview Matrix</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleTabClick('hourly')}
+                  className="flex items-center gap-2 transition-colors hover:text-white group text-left"
+                >
+                  <Clock className="size-3.5 text-white/40 group-hover:text-[var(--sky)] transition-colors" />
+                  <span>24h Hourly Graph</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleTabClick('daily')}
+                  className="flex items-center gap-2 transition-colors hover:text-white group text-left"
+                >
+                  <CalendarDays className="size-3.5 text-white/40 group-hover:text-[var(--sky)] transition-colors" />
+                  <span>7-Day Synoptic</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleTabClick('telemetry')}
+                  className="flex items-center gap-2 transition-colors hover:text-white group text-left"
+                >
+                  <Activity className="size-3.5 text-white/40 group-hover:text-[var(--sky)] transition-colors" />
+                  <span>Atmospheric Bento</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Legal & Governance (lg: 2 cols) */}
+          <div className="flex flex-col gap-3 lg:col-span-2">
+            <h4 className="font-display text-xs font-semibold uppercase tracking-wider text-white/40">
+              Governance
+            </h4>
+            <ul className="flex flex-col gap-2 text-sm text-white/70">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onOpenLegal?.('privacy')}
+                  className="flex items-center gap-2 transition-colors hover:text-[var(--sky)] group text-left"
+                >
+                  <ShieldCheck className="size-3.5 text-sky-400/80 group-hover:text-[var(--sky)] transition-colors" />
+                  <span className="font-medium">Privacy Policy</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onOpenLegal?.('terms')}
+                  className="flex items-center gap-2 transition-colors hover:text-[var(--gold)] group text-left"
+                >
+                  <FileText className="size-3.5 text-amber-400/80 group-hover:text-[var(--gold)] transition-colors" />
+                  <span className="font-medium">Terms of Service</span>
+                </button>
+              </li>
+              <li>
+                <a
+                  href="https://open-meteo.com"
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={link.name}
-                  title={link.name}
-                  whileHover={{ scale: 1.14, y: -2 }}
-                  whileTap={{ scale: 0.92 }}
-                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-                  className={`flex size-9 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-white/60 transition-all duration-200 ${link.hoverColor} ${link.hoverBorder} ${link.hoverGlow}`}
+                  className="flex items-center gap-1.5 text-white/55 transition-colors hover:text-white group"
                 >
-                  <Icon className="size-4" />
-                </motion.a>
-              );
-            })}
+                  <span>Data Attribution</span>
+                  <ExternalLink className="size-3 opacity-60 group-hover:opacity-100" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/mizan989/skylio/blob/main/LICENSE"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 text-white/55 transition-colors hover:text-white group"
+                >
+                  <span>MIT License</span>
+                  <ExternalLink className="size-3 opacity-60 group-hover:opacity-100" />
+                </a>
+              </li>
+            </ul>
           </div>
 
-          {/* Open-Meteo Live Data Beacon */}
-          <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 text-xs text-white/50 backdrop-blur-md">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
-            </span>
-            <span className="font-mono text-[11px] text-white/60">Live Open-Meteo</span>
+          {/* Column 4: Creator & Connect (lg: 3 cols) */}
+          <div className="flex flex-col justify-between gap-6 lg:col-span-3">
+            <div className="flex flex-col gap-3">
+              <h4 className="font-display text-xs font-semibold uppercase tracking-wider text-white/40">
+                Connect
+              </h4>
+              <div className="flex flex-col gap-1 text-sm">
+                <div className="flex items-center gap-1.5 text-white/80">
+                  <span>Crafted with</span>
+                  <Heart className="size-3.5 fill-rose-500 text-rose-500 animate-pulse" />
+                  <span>by</span>
+                  <span className="font-semibold text-white">Md Mizan</span>
+                </div>
+                <p className="text-xs text-white/50">Full-Stack Engineer & Designer</p>
+              </div>
+
+              {/* Social Media Pill Dock */}
+              <div className="mt-2 flex items-center gap-2">
+                {SOCIAL_LINKS.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <motion.a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={link.name}
+                      title={link.name}
+                      whileHover={{ scale: 1.15, y: -2 }}
+                      whileTap={{ scale: 0.92 }}
+                      transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                      className={`flex size-9 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-white/60 transition-all duration-200 ${link.hoverColor} ${link.hoverBorder} ${link.hoverGlow}`}
+                    >
+                      <Icon className="size-4" />
+                    </motion.a>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Back To Top Button */}
+            <div>
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={scrollToTop}
+                className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/70 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+              >
+                <ArrowUp className="size-3.5 text-[var(--sky)]" />
+                <span>Back to Zenith</span>
+              </motion.button>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Bottom Sub-Footer: Copyright & Privacy Badge */}
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 sm:flex-row text-xs text-white/45">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span>© {currentYear} Skylio. Built for precision & meteorological elegance.</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => onOpenLegal?.('privacy')}
+              className="text-white/45 hover:text-white transition-colors"
+            >
+              Privacy
+            </button>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => onOpenLegal?.('terms')}
+              className="text-white/45 hover:text-white transition-colors"
+            >
+              Terms
+            </button>
+            <span>•</span>
+            <span className="text-emerald-400/80 font-mono text-[11px]">100% Tracker-Free</span>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

@@ -13,6 +13,7 @@ import DailyList from './components/DailyList';
 import TelemetryBentoGrid from './components/TelemetryBentoGrid';
 import WeatherBackground from './components/WeatherBackground';
 import Footer from './components/Footer';
+import LegalModal, { type LegalTab } from './components/legal/LegalModal';
 import { Meteors } from './components/inspira/Meteors';
 import { AnimatedTabs, type TabItem } from './components/inspira/AnimatedTabs';
 import { useWeather } from './hooks/useWeather';
@@ -67,6 +68,41 @@ export default function App() {
   const { locate, locating, error: geoError } = useGeolocation();
   const { data, loading, error, reload } = useWeather(location, unit);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLegalOpen, setIsLegalOpen] = useState(false);
+  const [legalTab, setLegalTab] = useState<LegalTab>('privacy');
+
+  // Handle URL hash routing for legal documents (#privacy, #terms)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#privacy') {
+        setLegalTab('privacy');
+        setIsLegalOpen(true);
+      } else if (hash === '#terms') {
+        setLegalTab('terms');
+        setIsLegalOpen(true);
+      }
+    };
+
+    // Check initial hash
+    handleHashChange();
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const openLegal = useCallback((tab: LegalTab) => {
+    setLegalTab(tab);
+    setIsLegalOpen(true);
+    window.location.hash = tab === 'privacy' ? '#privacy' : '#terms';
+  }, []);
+
+  const closeLegal = useCallback(() => {
+    setIsLegalOpen(false);
+    if (window.location.hash === '#privacy' || window.location.hash === '#terms') {
+      window.history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.add('dark');
@@ -350,8 +386,19 @@ export default function App() {
           </div>
         )}
 
-        {/* Footer with social links */}
-        <Footer />
+        {/* Redesigned Footer with social links, live status, and legal navigation */}
+        <Footer
+          onOpenLegal={openLegal}
+          onNavigateTab={(tab) => setActiveTab(tab)}
+        />
+
+        {/* Dedicated Legal Modal (Privacy Policy & Terms of Service) */}
+        <LegalModal
+          isOpen={isLegalOpen}
+          onClose={closeLegal}
+          initialTab={legalTab}
+          onTabChange={setLegalTab}
+        />
       </motion.div>
     </ReactLenis>
   );
